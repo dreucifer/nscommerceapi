@@ -1,2 +1,9 @@
 userkey
 usertoken
+certificate
+application
+*.p
+*.pyc
+*.swp
+*.csv
+tags
