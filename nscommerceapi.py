@@ -6,9 +6,9 @@ from suds.client import Client
 class NsCommerceApi(object):
     def __init__(
         self,
-        app_fn="application",
-        cert_fn="certificate",
-        toke_fn="usertoken.p"
+        app_fn="/home/drew/dev/python/nscommerceapi/application",
+        cert_fn="/home/drew/dev/python/nscommerceapi/certificate",
+        toke_fn="/home/drew/dev/python/nscommerceapi/usertoken.p"
     ):
         """Create and return the client, along with security headers"""
         self.app_fn = app_fn

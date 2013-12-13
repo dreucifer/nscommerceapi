@@ -31,9 +31,9 @@ class Products(NsCommerceApi):
             response = client.service.ReadProduct(
                 DetailSize="Small")
         if response.Status == "Success":
-            print response
+            return response
         else:
-            print response
+            return response
 
 
 if __name__ == '__main__':

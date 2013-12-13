@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# encoding: utf-8
 """Read orders module"""
 import logging
 import argparse
@@ -30,24 +32,24 @@ class Orders(NsCommerceApi):
         """Uses a previously generated client and some arguments to """
 
         client = self.client
-        order = kwargs.get("order", [None])[0]
-        if order is not None:
-            order_number = order
-            filterlist = client.factory.create('FilterType')
-            filterlist.Field = 'OrderNumber'
-            filterlist.Operator.value = 'Equal'
-            filterlist.ValueList = order_number
-            response = client.service.ReadOrder(DetailSize="Large",
-                                                FilterList=filterlist)
-        else:
-            response = client.service.ReadOrder(DetailSize="Large")
-        if response.Status is not 'Failure':
-            if hasattr(response, 'OrderList'):
-                return response.OrderList[0]
+        if kwargs:
+            order = kwargs.get("order", [None])[0]
+            if order is not None:
+                order_number = order
+                filterlist = client.factory.create('FilterType')
+                filterlist.Field = 'OrderNumber'
+                filterlist.Operator.value = 'Equal'
+                filterlist.ValueList = order_number
+                response = client.service.ReadOrder(DetailSize="Large",
+                                                    FilterList=filterlist)
             else:
-                return None
+                response = client.service.ReadOrder(DetailSize="Large")
+            if response.Status is not 'Failure':
+                if hasattr(response, 'OrderList'):
+                    return response.OrderList[0]
+                else:
+                    return None
         else:
-            print 'Error:\t'
             return None
 
 
