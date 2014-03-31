@@ -69,6 +69,7 @@ class Orders(NsCommerceApi):
                 order.Status.Name = "Shipped"
                 order.Shipping.PackageList = [package]
                 response = client.service.UpdateOrder(Order=order)
+                print response
                 if response.Status is not 'Failed':
                     print response.Status
                     return "Order#: %(order)s Archived" % {

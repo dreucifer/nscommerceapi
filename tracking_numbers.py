@@ -79,8 +79,8 @@ def main():
 
     update = ORDERS.update
 
-    tracking_update(fedex_numbers(), update)
-    tracking_update(usps_numbers(), update)
+    print tracking_update(fedex_numbers(), update)
+    print tracking_update(usps_numbers(), update)
 
 
 if __name__ == "__main__":

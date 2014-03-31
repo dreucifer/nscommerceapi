@@ -55,8 +55,8 @@ def getUserToken(client):
 	if response.Status != 'Failure':
 		with open('securityCredential.p', 'w') as credentialfile:
 			credential = client.factory.create('SecurityCredential')
-			credential.Application = application
-			credential.Certificate = certificate
+			credential.Application = app
+			credential.Certificate = cert
 			credential.UserToken = response.UserToken.UserToken
 			pickle.dump(credential, credentialfile)
 		print 'SecurityCredential written to file'
@@ -81,7 +81,7 @@ if __name__ == "__main__":
 		app = raw_input('\nenter Application name:\n\t')
 	
 	try:
-		with open('securityCredential.p', 'r') as tokenfile:
+		with open('usertoken.p', 'r') as tokenfile:
 			token = pickle.load(tokenfile).rstrip()
 	except IOError:
 		token = raw_input('\nenter UserToken:\n\t')
