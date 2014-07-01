@@ -28,6 +28,14 @@ class Orders(NsCommerceApi):
         pass
 
 
+    def read_recent(self, limit=1):
+        client = self.client
+        pagerequest = dict()
+        pagerequest["Size"] = int(limit)
+        response = client.service.ReadOrder(DetailSize="Small",
+                PageRequest=pagerequest)
+        return response
+        
     def read(self, **kwargs):
         """Uses a previously generated client and some arguments to """
 

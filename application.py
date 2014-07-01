@@ -1,47 +1,67 @@
 #!/usr/bin/env python
-""" A stupid fucking program to make sure shit gets out """
+# -*- coding: utf-8 -*-
+from orders import Orders
+import Tkinter as tk
 
-import wx
+ORDERS = Orders()
 
-class MainWindow(wx.Frame):
-    # pylint: disable=R0904
-    # pylint: disable=C0103
-    """
-    Prop that frame up with a turd of a status bar, and put in a
-    stupid fuckin' menu, too.
-    """
+def passable():
+    pass
 
+class Application(tk.Tk):
+    def __init__(self, master=None):
+        tk.Tk.__init__(self, master)
+        self.create_menu()
+        self.build_list()
+        self.open()
 
-    def __init__(self, *args, **kwargs):
-        wx.Frame.__init__(self, *args, **kwargs)
-        box = wx.BoxSizer(wx.VERTICAL)
+    def create_menu(self):
+        self.menubar = tk.Menu(self)
+        filemenu = tk.Menu(self, tearoff=0)
+        filemenu.add_command(label="Open", command=self.open)
+        filemenu.add_command(label="Update", command=self.update)
+        filemenu.add_separator()
+        filemenu.add_command(label="Quit", command=self.quit)
+        self.menubar.add_cascade(label="File", menu=filemenu)
+        self.config(menu=self.menubar)
 
+    def build_list(self):
+        scrollbar = tk.Scrollbar(self)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        
+        self.listbox = tk.Listbox(self, yscrollcommand=scrollbar.set)
+        self.listbox.pack(fill=tk.BOTH, side=tk.LEFT)
 
-        box.Add(panel1, 2, wx.EXPAND)
-        box.Add(panel2, 1, wx.EXPAND)
+        scrollbar.config(command=self.listbox.yview)
 
-        self.SetAutoLayout(True)
-        self.SetSizer(box)
-        self.Layout()
+    def build_viewer(self):
+        self.viewbox = tk.Frame(self)
+        self.viewbox.pack(fill=tk.BOTH)
+        labler = tk.Label(self.viewbox, text="test")
+        labler.grid(column=2)
 
-    def OnClear(self, event):
-        print "poops"
+    def update(self):
         pass
 
-    def OnChange(self, event):
-        pass
-
-    def OnKeyPress(self, event):
-        pass
-
+    def open(self):
+        orderlist = ORDERS.read_recent(limit=30)
+        if orderlist.Status == "Success":
+            orderlist = orderlist.OrderList
+            for order in orderlist:
+                fmt_dict = dict()
+                fmt_dict['status'] = order.Status.Name
+                fmt_dict['first_name'] = order.Customer.BillingAddress.FirstName
+                fmt_dict['last_name'] = order.Customer.BillingAddress.LastName
+                fmt_dict['order_number'] = order._OrderNumber
+                line = """\
+{status} - {order_number} - {first_name} {last_name}"""
+                self.listbox.insert(tk.END, line.format(
+                    **fmt_dict))
 
 def main():
-    """docstring for """
+    app = Application()
+    app.title('nsCommerce Order Import')
+    app.mainloop()
 
-    app = wx.App(False)
-    frame = MainWindow(parent=None, title="Order List")
-    frame.Show()
-    app.MainLoop()
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
