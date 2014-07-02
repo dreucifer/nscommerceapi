@@ -45,4 +45,5 @@ application
 *.swp
 *.csv
 tags
+setenv.sh
 >>>>>>> 550a16f4ca5d6dc94c54705d1b819857db4c77a1

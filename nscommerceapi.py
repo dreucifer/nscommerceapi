@@ -1,4 +1,5 @@
 """@todo: nscommerceapi docstring"""
+import os
 import pickle
 from suds.client import Client
 
@@ -6,33 +7,36 @@ from suds.client import Client
 class NsCommerceApi(object):
     def __init__(
         self,
-        app_fn="/home/drew/dev/python/nscommerceapi/application",
-        cert_fn="/home/drew/dev/python/nscommerceapi/certificate",
-        toke_fn="/home/drew/dev/python/nscommerceapi/usertoken.p"
+        app_var='NSAPI_APP',
+        cert_var='NSAPI_CERT',
+        toke_var='NSAPI_TOKEN'
     ):
         """Create and return the client, along with security headers"""
-        self.app_fn = app_fn
-        self.cert_fn = cert_fn
-        self.toke_fn = toke_fn
+        self.app_var = app_var
+        self.cert_var = cert_var
+        self.toke_var = toke_var
         self.client = None
 
 
     def connect(self):
         try:
-            with open(self.cert_fn, 'r') as cert_file:
-                cert = cert_file.read().rstrip()
-        except IOError:
-            cert = raw_input('\nenter Certificate:\n\t')
+            cert = os.environ[self.cert_var]
+        except KeyError:
+            cert = raw_input('\nEnter Certificate:\n\t')
         try:
-            with open(self.app_fn, 'r') as app_file:
-                app = app_file.read().rstrip()
-        except IOError:
-            app = raw_input('\nenter Application name:\n\t')
+            app = os.environ[self.app_var]
+        except KeyError:
+            app = raw_input('\nEnter Application name:\n\t')
         try:
-            with open(self.toke_fn, 'r') as toke_file:
+            toke_fn = os.environ[self.toke_var]
+        except KeyError:
+            toke_fn = raw_input("Enter UserToken file location:\n\t")
+        try:
+            with open(toke_fn, 'r') as toke_file:
                 toke = pickle.load(toke_file).rstrip()
         except IOError:
-            toke = raw_input('\nenter UserToken:\n\t')
+            toke = raw_input('\nEnter UserToken:\n\t')
+
         wsdl = 'https://ecomapi.networksolutions.com/soapservice.asmx?wsdl'
 
         #Set up the SOAP client based on the nsCommerce WSDl
