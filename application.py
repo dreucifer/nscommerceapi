@@ -23,14 +23,15 @@ class Application(tk.Tk):
         filemenu.add_separator()
         filemenu.add_command(label="Quit", command=self.quit)
         self.menubar.add_cascade(label="File", menu=filemenu)
+        self.menubar.add_command(label="Scan", command=self.scan)
         self.config(menu=self.menubar)
 
     def build_list(self):
         scrollbar = tk.Scrollbar(self)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        scrollbar.pack(side=tk.RIGHT)
         
         self.listbox = tk.Listbox(self, yscrollcommand=scrollbar.set)
-        self.listbox.pack(fill=tk.BOTH, side=tk.LEFT)
+        self.listbox.pack(fill=tk.X, side=tk.TOP)
 
         scrollbar.config(command=self.listbox.yview)
 
@@ -44,19 +45,25 @@ class Application(tk.Tk):
         pass
 
     def open(self):
-        orderlist = ORDERS.read_recent(limit=30)
-        if orderlist.Status == "Success":
-            orderlist = orderlist.OrderList
+        orderResponse = ORDERS.read_recent(limit=30)
+        orderlist = orderResponse.OrderList
+        if orderResponse.Status == "Success":
             for order in orderlist:
                 fmt_dict = dict()
                 fmt_dict['status'] = order.Status.Name
                 fmt_dict['first_name'] = order.Customer.BillingAddress.FirstName
                 fmt_dict['last_name'] = order.Customer.BillingAddress.LastName
                 fmt_dict['order_number'] = order._OrderNumber
-                line = """\
-{status} - {order_number} - {first_name} {last_name}"""
+                line = \
+"""\
+{status} - {order_number} - {first_name} {last_name}\
+"""
                 self.listbox.insert(tk.END, line.format(
                     **fmt_dict))
+
+    def scan(self):
+        for index in range(0, self.listbox.size()):
+            self.listbox.activate(index)
 
 def main():
     app = Application()

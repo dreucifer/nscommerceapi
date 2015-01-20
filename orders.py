@@ -56,6 +56,7 @@ class Orders(NsCommerceApi):
                 if hasattr(response, 'OrderList'):
                     return response.OrderList[0]
                 else:
+                    print(response)
                     return None
         else:
             return None
@@ -83,7 +84,7 @@ class Orders(NsCommerceApi):
                     return "Order#: %(order)s Archived" % {
                         'order': order_number}
                 else:
-                    print 'Update Order Failed'
+                    print 'Update Order Failed - See Response'
                     return response
             else:
                 return 'Order # %s Already Shipped' % order_number
@@ -92,7 +93,7 @@ class Orders(NsCommerceApi):
                 return 'Order not found'
             if tracking_number is None:
                 return 'No tracking number provided'
-            return 'Update Order Failed'
+            return 'Update Order Failed - Other'
 
 
     def delete(self):

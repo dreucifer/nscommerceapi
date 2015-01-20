@@ -5,7 +5,7 @@ tracking numbers with the NsCommerceApi
 """
 
 from orders import Orders
-from csv import reader, excel_tab
+from csv import reader, excel_tab, DictReader
 from urllib2 import URLError
 
 
@@ -59,6 +59,19 @@ def fedex_numbers(filename="FedExHistoryExport.csv"):
                 continue
             yield parse_fedex(number)
 
+def parse_generic(line):
+    return dict(order=[line[1]], tracking=[line[0]])
+
+def generic_numbers(filename="shipping.csv"):
+    with open(filename, "rU") as generic_file:
+        generic_file.readline()
+        numbers = reader(generic_file)
+        for number in numbers:
+            if not number:
+                continue
+            parsed = parse_generic(number)
+            print parsed
+            yield parsed
 
 def tracking_update(tracking, update):
     for order in tracking:
@@ -79,8 +92,8 @@ def main():
 
     update = ORDERS.update
 
+    print tracking_update(generic_numbers(), update)
     print tracking_update(fedex_numbers(), update)
-    print tracking_update(usps_numbers(), update)
 
 
 if __name__ == "__main__":
